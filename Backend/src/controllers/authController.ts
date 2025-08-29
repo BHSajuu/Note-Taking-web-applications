@@ -114,5 +114,12 @@ export const googleAuthCallback = (req: Request, res: Response) => {
         expiresIn: '7d',
       });
     
-      res.redirect(`${process.env['CLIENT_URL']}/login/success?token=${token}`);
-    };
+      try {
+        const redirectUrl = new URL('/login/success', process.env['CLIENT_URL']);
+        redirectUrl.searchParams.set('token', token);
+        res.redirect(redirectUrl.href);
+    } catch (error) {
+        console.error("Error creating redirect URL:", error);
+        res.status(500).send("Internal Server Error");
+    } 
+  };
