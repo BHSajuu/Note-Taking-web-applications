@@ -1,14 +1,14 @@
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
 import Note from '../models/noteModel.js';
-import type { AuthRequest } from '../types/index.js';
+// Using Express.Request with Express.User augmented via declaration merging
 
 
-export const getNotes = async (req: AuthRequest, res: Response) => {
+export const getNotes = async (req: Request, res: Response) => {
   const notes = await Note.find({ user: req.user?._id });
   res.json(notes);
 };
 
-export const createNote = async (req: AuthRequest, res: Response) => {
+export const createNote = async (req: Request, res: Response) => {
   const { title, content } = req.body;
 
   if (!title || !content) {
@@ -25,7 +25,7 @@ export const createNote = async (req: AuthRequest, res: Response) => {
   res.status(201).json(createdNote);
 };
 
-export const deleteNote = async (req: AuthRequest, res: Response) => {
+export const deleteNote = async (req: Request, res: Response) => {
   try {
     const note = await Note.findById(req.params['id']);
 
