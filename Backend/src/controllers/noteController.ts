@@ -1,6 +1,6 @@
 import type { Response } from 'express';
-import type { AuthRequest } from '../middleware/authMiddleware.js';
 import Note from '../models/noteModel.js';
+import type { AuthRequest } from '../types/index.js';
 
 
 export const getNotes = async (req: AuthRequest, res: Response) => {
@@ -26,16 +26,21 @@ export const createNote = async (req: AuthRequest, res: Response) => {
 };
 
 export const deleteNote = async (req: AuthRequest, res: Response) => {
-  const note = await Note.findById(req.params.id);
+  try {
+    const note = await Note.findById(req.params['id']);
 
-  if (!note) {
-    return res.status(404).json({ message: 'Note not found' });
+    if (!note) {
+      return res.status(404).json({ message: 'Note not found' });
+    }
+
+    if (note.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: 'User not authorized' });
+    }
+
+    await Note.findByIdAndDelete(req.params['id']);
+    res.json({ message: 'Note removed' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
   }
-
-  if (note.user.toString() !== req.user._id.toString()) {
-    return res.status(401).json({ message: 'User not authorized' });
-  }
-
-  await note.deleteOne();
-  res.json({ message: 'Note removed' });
 };

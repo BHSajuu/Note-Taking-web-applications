@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
+import type { INote } from '../types/index.js';
 
-const noteSchema = new mongoose.Schema(
+const noteSchema = new mongoose.Schema<INote>(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -22,6 +23,6 @@ const noteSchema = new mongoose.Schema(
   }
 );
 
-const Note = mongoose.model('Note', noteSchema);
+const Note = mongoose.model<INote>('Note', noteSchema);
 
 export default Note;

@@ -4,9 +4,12 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import passport from 'passport'; 
 import connectDB from './config/db.js';
+import './models/userModel.js';
+import './models/noteModel.js';
 import authRoutes from './routes/authRoutes.js';
 import noteRoutes from './routes/noteRoutes.js'
 import './config/passport-setup.js'; 
+
 
 dotenv.config();
 connectDB();
