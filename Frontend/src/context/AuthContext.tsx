@@ -1,9 +1,11 @@
-import  { createContext, useState, useEffect, useContext } from 'react';
+
+import { createContext, useState, useEffect, useContext } from 'react';
 import type {ReactNode} from "react"
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 interface User {
-  id: string;
+  _id: string; 
   name: string;
   email: string;
 }
@@ -13,7 +15,7 @@ interface AuthContextType {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (token: string) => Promise<void>;
+  login: (token: string) => void; 
   logout: () => void;
 }
 
@@ -21,34 +23,30 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('authToken'));
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem('authToken'));
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const loadUserFromToken = async () => {
       if (token) {
-        localStorage.setItem('authToken', token);
         try {
-            // Here you would typically have a /me endpoint to get user data
-            // For now, we can decode the token or fetch user data after another action
-            // Let's assume login function will handle setting the user
-            setIsLoading(false); // Assume token is valid until an API call fails
+          const { data } = await api.get('/auth/me');
+          setUser(data);
         } catch (error) {
+          console.error("Invalid token, logging out.");
           logout();
         }
-      } else {
-        setIsLoading(false);
       }
+      setIsLoading(false);
     };
-    loadUserFromToken();
-  }, [token]);
 
-  const login = async (newToken: string) => {
+    setIsLoading(true);
+    loadUserFromToken();
+  }, [token]); 
+
+  const login = (newToken: string) => {
     setToken(newToken);
-    localStorage.setItem('authToken', newToken);
-    // You can add a call here to a '/users/me' endpoint to fetch and set user data
-    // For simplicity, we'll navigate and let the dashboard fetch what it needs.
     navigate('/dashboard');
   };
 
@@ -62,13 +60,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const value = {
     user,
     token,
-    isAuthenticated: !!token,
+    isAuthenticated: !!token && !!user,
     isLoading,
     login,
     logout,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{!isLoading && children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

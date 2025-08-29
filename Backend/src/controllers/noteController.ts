@@ -1,6 +1,5 @@
 import type { Request, Response } from 'express';
 import Note from '../models/noteModel.js';
-// Using Express.Request with Express.User augmented via declaration merging
 
 
 export const getNotes = async (req: Request, res: Response) => {

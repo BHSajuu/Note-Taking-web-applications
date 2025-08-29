@@ -9,7 +9,7 @@ interface Note {
 }
 
 const Dashboard = () => {
-  const { user, logout } = useAuth(); // We need to get the user from context
+  const {user, logout } = useAuth();
   const [notes, setNotes] = useState<Note[]>([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -53,8 +53,7 @@ const Dashboard = () => {
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-bold">My Notes</h1>
           <div className="flex items-center space-x-4">
-            {/* Displaying user info will require fetching it and storing in AuthContext */}
-            <span>Welcome!</span>
+            <span>Welcome, {user?.name}!</span>
             <button onClick={logout} className="px-4 py-2 text-white bg-red-500 rounded-md">Logout</button>
           </div>
         </div>

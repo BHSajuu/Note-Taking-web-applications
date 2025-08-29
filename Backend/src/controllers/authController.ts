@@ -122,4 +122,9 @@ export const googleAuthCallback = (req: Request, res: Response) => {
         console.error("Error creating redirect URL:", error);
         res.status(500).send("Internal Server Error");
     } 
-  };
+};
+
+
+export const getMe = async (req: Request, res: Response) => {
+  res.status(200).json(req.user);
+};

@@ -1,6 +1,7 @@
 import express from 'express';
 import passport from 'passport';
-import { requestOtp, verifyOtp, googleAuthCallback } from '../controllers/authController.js';
+import { requestOtp, verifyOtp, googleAuthCallback, getMe } from '../controllers/authController.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -18,5 +19,7 @@ router.get(
   }),
   googleAuthCallback 
 );
+
+router.get('/me', protect, getMe);
 
 export default router;
