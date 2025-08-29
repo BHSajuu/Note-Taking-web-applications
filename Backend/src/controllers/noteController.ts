@@ -4,7 +4,7 @@ import Note from '../models/noteModel.js';
 
 export const getNotes = async (req: Request, res: Response) => {
   const notes = await Note.find({ user: req.user?._id });
-  res.json(notes);
+  return res.json(notes);
 };
 
 export const createNote = async (req: Request, res: Response) => {
@@ -21,7 +21,7 @@ export const createNote = async (req: Request, res: Response) => {
   });
 
   const createdNote = await note.save();
-  res.status(201).json(createdNote);
+  return res.status(201).json(createdNote);
 };
 
 export const deleteNote = async (req: Request, res: Response) => {
@@ -37,9 +37,9 @@ export const deleteNote = async (req: Request, res: Response) => {
     }
 
     await Note.findByIdAndDelete(req.params['id']);
-    res.json({ message: 'Note removed' });
+    return res.json({ message: 'Note removed' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server Error' });
+    return res.status(500).json({ message: 'Server Error' });
   }
 };

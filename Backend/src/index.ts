@@ -17,7 +17,7 @@ connectDB();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: process.env['CLIENT_URL'] || "http://localhost:5173", credentials: true }));
 app.use(express.json());
 app.use(passport.initialize()); 
 
@@ -32,5 +32,5 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on :${PORT}`);
 });
