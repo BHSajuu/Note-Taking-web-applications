@@ -27,7 +27,6 @@ const sendEmail = async (email: string, subject: string, text: string) => {
   }
 };
 
-//  Controller to request an OTP
 export const requestOtp = async (req: Request, res: Response) => {
   const { email, name } = req.body;
 
@@ -61,7 +60,6 @@ export const requestOtp = async (req: Request, res: Response) => {
 };
 
 
-// Controller to verify OTP and sign up
 export const verifyOtp = async (req: Request, res: Response) => {
   const { email, otp } = req.body;
 
@@ -86,7 +84,7 @@ export const verifyOtp = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Invalid OTP.' });
     }
 
-    user.otp = null;
+    user.otp = "";
     user.otpExpiry = null;
     await user.save();
 

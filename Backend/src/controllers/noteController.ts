@@ -4,7 +4,7 @@ import type { AuthRequest } from '../types/index.js';
 
 
 export const getNotes = async (req: AuthRequest, res: Response) => {
-  const notes = await Note.find({ user: req.user._id });
+  const notes = await Note.find({ user: req.user?._id });
   res.json(notes);
 };
 
@@ -18,7 +18,7 @@ export const createNote = async (req: AuthRequest, res: Response) => {
   const note = new Note({
     title,
     content,
-    user: req.user._id, 
+    user: req.user?._id, 
   });
 
   const createdNote = await note.save();
@@ -33,7 +33,7 @@ export const deleteNote = async (req: AuthRequest, res: Response) => {
       return res.status(404).json({ message: 'Note not found' });
     }
 
-    if (note.user.toString() !== req.user._id.toString()) {
+    if (note.user?.toString() !== req.user?._id?.toString()) {
       return res.status(401).json({ message: 'User not authorized' });
     }
 

@@ -6,7 +6,7 @@ export interface IUser extends Document {
   email: string;
   googleId?: string;
   otp?: string;
-  otpExpiry?: Date;
+  otpExpiry?: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
