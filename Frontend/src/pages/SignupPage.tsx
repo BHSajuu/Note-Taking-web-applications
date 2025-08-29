@@ -1,48 +1,82 @@
-
+import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import api from '../services/api';
+import { AxiosError } from 'axios';
 
 const SignupPage = () => {
+  const { login } = useAuth();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleRequestOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      await api.post('/auth/request-otp', { name, email });
+      setIsOtpSent(true);
+    } catch (err) {
+      const axiosError = err as AxiosError<{ message: string }>;
+      setError(axiosError.response?.data?.message || 'Failed to send OTP.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      const { data } = await api.post('/auth/verify-otp', { email, otp });
+      await login(data.token);
+    } catch (err) {
+      const axiosError = err as AxiosError<{ message: string }>;
+      setError(axiosError.response?.data?.message || 'Failed to verify OTP.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignup = () => {
+    window.location.href = 'http://localhost:5001/api/auth/google';
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className="text-3xl font-bold">Create an Account</h1>
-          <p className="text-gray-500">Let's get started with your 30-day free trial.</p>
+            <h1 className="text-3xl font-bold">Create an Account</h1>
         </div>
+        
+        {error && <p className="text-red-500 text-center">{error}</p>}
 
-        <form className="space-y-6">
-          <div>
-            <label htmlFor="name" className="text-sm font-medium">Name</label>
-            <input id="name" type="text" placeholder="Enter your name" className="w-full p-3 mt-1 border rounded-md" />
-          </div>
-          <div>
-            <label htmlFor="email" className="text-sm font-medium">Email</label>
-            <input id="email" type="email" placeholder="Enter your email" className="w-full p-3 mt-1 border rounded-md" />
-          </div>
+        <form onSubmit={isOtpSent ? handleVerifyOtp : handleRequestOtp} className="space-y-4">
+            {!isOtpSent && (
+                <>
+                    <input value={name} onChange={e => setName(e.target.value)} type="text" placeholder="Enter your name" required className="w-full p-3 border rounded-md" />
+                    <input value={email} onChange={e => setEmail(e.target.value)} type="email" placeholder="Enter your email" required className="w-full p-3 border rounded-md" />
+                </>
+            )}
+            
+            {isOtpSent && (
+                <input value={otp} onChange={e => setOtp(e.target.value)} type="text" placeholder="Enter OTP" required className="w-full p-3 border rounded-md" />
+            )}
           
-          {/* We will add OTP field conditionally later */}
-
-          <button type="submit" className="w-full py-3 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700">
-            Get OTP
-          </button>
+            <button type="submit" disabled={loading} className="w-full py-3 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-blue-400">
+                {loading ? 'Loading...' : isOtpSent ? 'Verify OTP' : 'Get OTP'}
+            </button>
         </form>
+        
+        <div className="relative text-center"><span className="px-2 text-gray-500 bg-white">OR</span></div>
 
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 text-gray-500 bg-white">OR</span>
-          </div>
-        </div>
-
-        <button className="w-full py-3 font-semibold border rounded-md flex items-center justify-center">
-          {/* Add Google Icon from assets here */}
-          <span className="ml-2">Sign up with Google</span>
+        <button onClick={handleGoogleSignup} className="w-full py-3 font-semibold border rounded-md flex items-center justify-center">
+          Sign up with Google
         </button>
-
-        <p className="text-sm text-center text-gray-600">
-          Already have an account? <a href="#" className="font-medium text-blue-600 hover:underline">Log in</a>
-        </p>
       </div>
     </div>
   );

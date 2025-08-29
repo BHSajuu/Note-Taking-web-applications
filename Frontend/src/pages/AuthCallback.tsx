@@ -1,27 +1,31 @@
 
 import  { useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 const AuthCallback = () => {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const token = searchParams.get('token');
+
     if (token) {
-      // We will save the token and user data in the next step
-      console.log("Received token:", token);
+      // Step 1: Persist the token to localStorage.
       localStorage.setItem('authToken', token);
-      navigate('/dashboard');
+      
+      // Step 2: Force a full page reload by navigating to the dashboard.
+      // This ensures that when the app re-initializes, our AuthProvider
+      // will read the new token from localStorage from the very beginning.
+      window.location.replace('/dashboard');
     } else {
-      // Handle login failure
-      navigate('/');
+      // Handle the failure case.
+      console.error("Google login failed, no token received.");
+      window.location.replace('/');
     }
-  }, [searchParams, navigate]);
+  }, [searchParams]); // We no longer need navigate or login as dependencies.
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <p>Loading, please wait...</p>
+      <p>Finalizing login, please wait...</p>
     </div>
   );
 };
