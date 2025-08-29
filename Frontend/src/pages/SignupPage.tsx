@@ -33,7 +33,7 @@ const SignupPage = () => {
     setLoading(true);
     try {
       const { data } = await api.post('/auth/verify-otp', { email, otp });
-      await login(data.token);
+      login(data.token);
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
       setError(axiosError.response?.data?.message || 'Failed to verify OTP.');
@@ -43,7 +43,7 @@ const SignupPage = () => {
   };
 
   const handleGoogleSignup = () => {
-    window.location.href = 'http://localhost:5001/api/auth/google';
+    window.location.href =  `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/auth/google`;
   };
 
   return (

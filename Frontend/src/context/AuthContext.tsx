@@ -1,5 +1,5 @@
 
-import { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import type {ReactNode} from "react"
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
@@ -27,6 +27,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
+  const logout = useCallback(() => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem('authToken');
+    navigate('/');
+  }, [navigate]);
+
   useEffect(() => {
     const loadUserFromToken = async () => {
       if (token) {
@@ -35,7 +42,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setUser(data);
         } catch (error) {
           console.error("Invalid token, logging out.");
-          logout();
+          localStorage.removeItem('authToken');
+          setToken(null);
+          setUser(null);
         }
       }
       setIsLoading(false);
@@ -47,14 +56,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (newToken: string) => {
     setToken(newToken);
+    localStorage.setItem('authToken', newToken); 
     navigate('/dashboard');
-  };
-
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem('authToken');
-    navigate('/');
   };
 
   const value = {
