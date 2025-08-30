@@ -8,6 +8,7 @@ interface User {
   _id: string; 
   name: string;
   email: string;
+  dateOfBirth?: string | Date;
 }
 
 interface AuthContextType {
@@ -31,7 +32,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
     setToken(null);
     localStorage.removeItem('authToken');
-    navigate('/');
+    navigate('/signin');
   }, [navigate]);
 
   useEffect(() => {

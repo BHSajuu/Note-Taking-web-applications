@@ -27,16 +27,34 @@ const sendEmail = async (email: string, subject: string, text: string) => {
   }
 };
 
-export const requestOtp = async (req: Request, res: Response) => {
-  const { email, name } = req.body;
 
-  if (!email || !name) {
-    return res.status(400).json({ message: 'Name and email are required' });
+// Request OTP endpoint -> handles both signup and signin 
+export const requestOtp = async (req: Request, res: Response) => {
+  const { email, name, dateOfBirth, isSignin } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required' });
   }
 
-  const existingUser = await User.findOne({ email });
-  if (existingUser && !existingUser.otp) { 
-      return res.status(400).json({ message: 'User already exists. Please log in.' });
+  if (isSignin) {
+    const existingUser = await User.findOne({ email });
+    if (!existingUser) {
+      return res.status(400).json({ message: 'No account found with this email. Please sign up first.' });
+    }
+  } else {
+    if (!name || !dateOfBirth) {
+      return res.status(400).json({ message: 'Name, email, and date of birth are required' });
+    }
+    
+    const dobDate = new Date(dateOfBirth);
+    if (isNaN(dobDate.getTime())) {
+      return res.status(400).json({ message: 'Invalid date of birth format' });
+    }
+    
+    const existingUser = await User.findOne({ email });
+    if (existingUser && !existingUser.otp) {
+      return res.status(400).json({ message: 'User already exists. Please sign in instead.' });
+    }
   }
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString(); 
@@ -45,23 +63,45 @@ export const requestOtp = async (req: Request, res: Response) => {
   const hashedOtp = await bcrypt.hash(otp, 10);
 
   try {
-    await User.findOneAndUpdate(
+    if (isSignin) {
+      await User.findOneAndUpdate(
         { email },
-        { name, email, otp: hashedOtp, otpExpiry },
+        { otp: hashedOtp, otpExpiry },
+        { new: true }
+      );
+    } else {
+      const updatedUser = await User.findOneAndUpdate(
+        { email },
+        { 
+          name, 
+          email, 
+          dateOfBirth: new Date(dateOfBirth), 
+          otp: hashedOtp, 
+          otpExpiry 
+        },
         { upsert: true, new: true, setDefaultsOnInsert: true }
-    );
+      );
+    }
     
-    await sendEmail(email, 'Your OTP for Note Taking App', `Your verification code is: ${otp}`);
+    const emailSubject = isSignin ? 'Sign In Verification Code' : 'Welcome to NoteTaker - Verification Code';
+    const emailText = isSignin 
+      ? `Your sign in verification code is: ${otp}. This code will expire in 10 minutes.`
+      : `Welcome to NoteTaker! Your verification code is: ${otp}. This code will expire in 10 minutes.`;
     
-    return res.status(200).json({ message: 'OTP sent to your email.' });
+    await sendEmail(email, emailSubject, emailText);
+    
+    return res.status(200).json({ 
+      message: isSignin ? 'Verification code sent to your email.' : 'Account created! Verification code sent to your email.' 
+    });
   } catch (error) {
     return res.status(500).json({ message: 'Error processing request', error });
   }
 };
 
 
+// Verify OTP endpoint -> handles both signup and signin verification
 export const verifyOtp = async (req: Request, res: Response) => {
-  const { email, otp } = req.body;
+  const { email, otp,  keepLoggedIn } = req.body;
 
   if (!email || !otp) {
     return res.status(400).json({ message: 'Email and OTP are required' });
@@ -88,8 +128,9 @@ export const verifyOtp = async (req: Request, res: Response) => {
     user.otpExpiry = null;
     await user.save();
 
+    const tokenExpiry = keepLoggedIn ? '30d' : '7d'; 
     const token = jwt.sign({ id: user._id }, process.env['JWT_SECRET'] as string, {
-      expiresIn: '7d',
+      expiresIn: tokenExpiry,
     });
 
     return res.status(201).json({
@@ -99,6 +140,7 @@ export const verifyOtp = async (req: Request, res: Response) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        dateOfBirth: user.dateOfBirth,
       },
     });
   } catch (error) {
@@ -126,5 +168,14 @@ export const googleAuthCallback = (req: Request, res: Response) => {
 
 
 export const getMe = async (req: Request, res: Response) => {
-  res.status(200).json(req.user);
+  const userData = {
+    _id: req.user?._id,
+    name: req.user?.name,
+    email: req.user?.email,
+    dateOfBirth: req.user?.dateOfBirth,
+    createdAt: req.user?.createdAt,
+    updatedAt: req.user?.updatedAt
+  };
+  
+  res.status(200).json(userData);
 };

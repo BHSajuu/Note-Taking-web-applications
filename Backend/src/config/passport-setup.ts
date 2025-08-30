@@ -19,7 +19,6 @@ passport.use(
           return done(null, existingUser);
         }
 
-        
         const newUser = await new User({
           googleId: profile.id,
           name: profile.displayName,
