@@ -43,3 +43,29 @@ export const deleteNote = async (req: Request, res: Response) => {
     return res.status(500).json({ message: 'Server Error' });
   }
 };
+
+
+export const updateNote = async (req: Request, res: Response) => {
+    const { title, content } = req.body;
+    try {
+        const note = await Note.findById(req.params['id']);
+
+        if (!note) {
+            return res.status(404).json({ message: 'Note not found' });
+        }
+
+        if (note.user?.toString() !== req.user?._id?.toString()) {
+            return res.status(401).json({ message: 'User not authorized' });
+        }
+
+        note.title = title || note.title;
+        note.content = content || note.content;
+
+        const updatedNote = await note.save();
+       return res.json(updatedNote);
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server Error' });
+    }
+};
