@@ -67,7 +67,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="lg:max-w-7xl lg:mx-auto lg:py-8">
-        <div className="bg-white lg:rounded-2xl lg:shadow-lg overflow-hidden">
+        <div className="bg-white  lg:rounded-2xl lg:shadow-lg overflow-hidden">
 
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
             <div className="flex items-center">
@@ -82,7 +82,7 @@ const Dashboard = () => {
             </button>
           </div>
 
-          <div className=" mb-6 flex flex-col gap-3 items-center  py-10 border-2 border-gray-200  shadow-xl my-12 mx-6 rounded-3xl">
+          <div className="max-w-3xl md:ml-60 mb-6 flex flex-col gap-3 items-center justify-center py-10 border-2 border-gray-200  shadow-xl my-12 mx-6 rounded-3xl">
             <h1 className="text-xl lg:text-2xl font-bold text-gray-900 mb-1">
               Welcome, {user?.name}!
             </h1>
@@ -156,11 +156,11 @@ const Dashboard = () => {
                 <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
               </div>
             ) : notes.length > 0 ? (
-              <div className="space-y-3 mb-5">
+              <div className="mb-5 grid grid-cols-1 lg:grid-cols-2  gap-5 lg:gap-32">
                 {notes.map((note) => (
                   <div
                     key={note._id}
-                    className="flex items-center justify-between px-4 py-2.5  rounded-2xl border-2 border-gray-200 hover:bg-gray-100 shadow-lg hover:shadow-2xl transition-all duration-300"
+                    className="flex items-center justify-between px-8 py-2.5  rounded-2xl border-2 border-gray-200  shadow-lg hover:shadow-2xl transition-all duration-300"
                   >
                     <div className="flex-1">
                       <h3 className="font-medium text-gray-900 mb-1">

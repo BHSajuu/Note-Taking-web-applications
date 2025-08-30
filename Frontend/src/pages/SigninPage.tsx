@@ -61,10 +61,10 @@ const SigninPage = () => {
   };
 
   return (
-    <div className=" flex flex-row items-center justify-center bg-white">
+    <div className=" pt-10 md:pt-0 flex flex-row items-center justify-center bg-white">
       {/* Left side Form section  */}
-      <div className="min-h-screen pb-36 w-full lg:w-1/2  flex flex-col justify-center  px-6 lg:pl-56 ">
-        <div className="mb-8  lg:mb-24">
+      <div className="min-h-screen pb-16 w-full lg:w-1/2  flex flex-col justify-center  px-6 lg:pl-56 ">
+        <div className="mb-8  md:-ml-28">
           <div className="flex justify-center lg:justify-start mr-10 lg:mr-0 items-center mb-2">
               <img src="/logo.png" alt="logo" className="w-14 h-10"/>
             <span className="text-3xl font-bold text-gray-900">HD</span>
@@ -73,7 +73,7 @@ const SigninPage = () => {
 
         <div className="max-w-md mx-auto lg:mx-0 w-full ">
           <div className="mb-8 text-center mr-5 lg:mr-0 ">
-            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
               Sign In
             </h1>
             <p className="text-gray-500 text-base">

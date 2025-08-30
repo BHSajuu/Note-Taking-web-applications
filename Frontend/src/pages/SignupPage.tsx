@@ -55,10 +55,10 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-row  items-center justify-center bg-white">
+    <div className="pt-10 md:pt-0 flex flex-row  items-center justify-center bg-white">
       {/* Left side  Form section  */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 lg:pl-56 ">
-        <div className="mb-8  lg:mb-24">
+      <div className="min-h-screen pb-16  w-full lg:w-1/2 flex flex-col justify-start px-6 lg:pl-44 ">
+        <div className="mb-8 md:pt-10  md:-ml-28">
           <div className="flex justify-center lg:justify-start mr-10 lg:mr-0 items-center mb-2">
             <img src="/logo.png" alt="logo" className="w-14 h-10" />
             <span className="text-3xl font-bold text-gray-900">HD</span>
@@ -67,7 +67,7 @@ const SignupPage = () => {
 
         <div className="max-w-md mx-auto lg:mx-0 w-full ">
           <div className="mb-8 text-center mr-5 lg:mr-0 ">
-            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
               Sign up
             </h1>
             <p className="text-gray-500 text-base">
@@ -163,15 +163,6 @@ const SignupPage = () => {
           </form>
 
           <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">or</span>
-              </div>
-            </div>
-
             <button
               onClick={handleGoogleSignup}
               className="mt-4 w-full flex gap-4 items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-white text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
@@ -196,11 +187,11 @@ const SignupPage = () => {
       </div>
 
       {/* Right side  Image section*/}
-      <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
+      <div className="hidden  lg:block lg:w-1/2 relative overflow-hidden">
         <img
           src="/loginImage.png"
           alt="image"
-          className="w-full h-[100vh] object-fill opacity-80 p-3 rounded-b-2xl"
+          className="w-full h-[99vh]  object-fill opacity-80 p-3 rounded-b-2xl"
         />
       </div>
     </div>
