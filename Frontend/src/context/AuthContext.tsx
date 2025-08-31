@@ -3,22 +3,8 @@ import { createContext, useState, useEffect, useContext, useCallback } from 'rea
 import type {ReactNode} from "react"
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import type { AuthContextType, User } from '../types';
 
-interface User {
-  _id: string; 
-  name: string;
-  email: string;
-  dateOfBirth?: string | Date;
-}
-
-interface AuthContextType {
-  user: User | null;
-  token: string | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login: (token: string) => void; 
-  logout: () => void;
-}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

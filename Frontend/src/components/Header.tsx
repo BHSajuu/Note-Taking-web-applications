@@ -5,7 +5,7 @@ const Header = () => {
   const { logout } = useAuth();
 
   return (
-    <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+    <div className="bg-gray-200 flex items-center justify-between px-6 py-4 border-b border-gray-100">
       <div className="flex items-center">
         <img src="/logo.png" alt="logo" className='w-14 h-10' />
         <span className="text-2xl font-semibold text-gray-900">Dashboard</span>

@@ -1,17 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../services/api';
 import Header from '../components/Header';
 import WelcomeDashboard from '../components/WelcomeDashboard';
 import EditorView from '../components/EditorView';
+import type { Note } from '../types';
 
-// Export the Note type so other components can use it
-export interface Note {
-  _id: string;
-  title: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-}
 
 const Dashboard = () => {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -37,13 +30,13 @@ const Dashboard = () => {
   }, []);
 
   const handleNewNoteClick = () => {
-    setActiveNote({ title: 'Untitled Note', content: '' }); // Prepare a new note
-    setIsEditorOpen(true); // Open the editor view
+    setActiveNote({ title: 'Untitled Note', content: '' }); 
+    setIsEditorOpen(true); 
   };
 
   const handleNoteSelect = (note: Note) => {
-    setActiveNote(note); // Set the selected note as active
-    setIsEditorOpen(true); // Open the editor view
+    setActiveNote(note);
+    setIsEditorOpen(true);
   };
   
   const handleCloseEditor = () => {
@@ -62,22 +55,19 @@ const Dashboard = () => {
     setIsSaving(true);
     try {
       if (activeNote._id) {
-        // Update existing note
         const { data: updatedNote } = await api.put(`/notes/${activeNote._id}`, {
           title: activeNote.title,
           content: activeNote.content,
         });
         setNotes(notes.map(note => note._id === updatedNote._id ? updatedNote : note));
       } else {
-        // Create new note
         const { data: newNote } = await api.post('/notes', {
           title: activeNote.title,
           content: activeNote.content,
         });
         setNotes([newNote, ...notes]);
-        setActiveNote(newNote); // Set the new note as active
+        setActiveNote(newNote);
       }
-      // Don't close editor after saving, allow continuous editing
     } catch (error) {
       console.error('Failed to save note:', error);
     } finally {
@@ -86,28 +76,13 @@ const Dashboard = () => {
   };
 
   const handleDeleteNote = async (noteId: string) => {
-    if (!window.confirm('Are you sure you want to delete this note?')) return;
     try {
       await api.delete(`/notes/${noteId}`);
-      await fetchNotes(); // Re-fetch notes to update the list
+      await fetchNotes(); 
     } catch (error) {
       console.error('Failed to delete note:', error);
     }
   };
-  
-  const handleEditorDelete = async () => {
-    if (activeNote && activeNote._id) {
-      await handleDeleteNote(activeNote._id);
-      handleCloseEditor();
-    }
-  };
-
-  // Backend logic for updating notes is required
-  const handleUpdateNote = async () => {
-    if (!activeNote || !activeNote._id) return;
-    await handleSaveNote();
-  };
-
 
   if (isEditorOpen && activeNote) {
     return (

@@ -1,37 +1,16 @@
-import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import type { Note } from '../pages/Dashboard';
 import { Trash2 } from 'lucide-react';
+import type { WelcomeDashboardProps } from '../types';
 
-interface WelcomeDashboardProps {
-  notes: Note[];
-  loading: boolean;
-  onNewNoteClick: () => void;
-  handleDeleteNote: (noteId: string) => void;
-  onNoteSelect: (note: Note) => void;
-}
 
 const WelcomeDashboard = ({ notes, loading, onNewNoteClick, handleDeleteNote, onNoteSelect }: WelcomeDashboardProps) => {
   const { user } = useAuth();
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [isCreating, setIsCreating] = useState(false);
-  const [showCreateForm, setShowCreateForm] = useState(false);
-
-  const handleCreateNote = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // This will now be handled by the main Dashboard component
-    // We can leave this form for quick notes if desired, or remove it.
-    // For now, let's just trigger the editor view.
-    onNewNoteClick(); 
-  };
-
-
+ 
+ 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="lg:max-w-7xl lg:mx-auto lg:py-8">
         <div className="bg-white lg:rounded-2xl lg:shadow-lg overflow-hidden">
-          {/* Header is now a separate component */}
           <div className="max-w-3xl md:ml-60 mb-6 flex flex-col gap-3 items-center justify-center py-10 border-2 border-gray-200 shadow-xl my-12 mx-6 rounded-3xl">
             <h1 className="text-xl lg:text-2xl font-bold text-gray-900 mb-1">
               Welcome, {user?.name}!
@@ -50,11 +29,10 @@ const WelcomeDashboard = ({ notes, loading, onNewNoteClick, handleDeleteNote, on
                 Create Note
               </button>
             </div>
-            {/* The simple create form is removed to favor the new editor view */}
           </div>
 
           <div className='px-5 py-1'>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Your Notes</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Your Notes</h2>
             {loading ? (
               <div className="flex items-center justify-center py-8">
                 <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
@@ -71,7 +49,7 @@ const WelcomeDashboard = ({ notes, loading, onNewNoteClick, handleDeleteNote, on
                       <h3 className="font-medium text-gray-900 mb-1 truncate">
                         {note.title}
                       </h3>
-                       <p className="text-sm text-gray-500 line-clamp-2">
+                       <p className="text-sm text-gray-500 line-clamp-1">
                         {new DOMParser().parseFromString(note.content, "text/html").documentElement.textContent}
                       </p>
                     </div>

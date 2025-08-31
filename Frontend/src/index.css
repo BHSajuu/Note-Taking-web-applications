@@ -15,3 +15,6 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
+button:hover{
+   cursor: pointer;
+}

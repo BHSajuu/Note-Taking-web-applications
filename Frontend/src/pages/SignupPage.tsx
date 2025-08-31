@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import { AxiosError } from 'axios';
+import OTPInput from '../components/OTPInput';
 
 const SignupPage = () => {
   const { login } = useAuth();
@@ -81,7 +82,7 @@ const SignupPage = () => {
             </div>
           )}
 
-          <form onSubmit={isOtpSent ? handleVerifyOtp : handleRequestOtp} className="space-y-3">
+          <form onSubmit={isOtpSent ? handleVerifyOtp : handleRequestOtp} className="space-y-4">
 
             <div>
               <label className="block text-sm text-gray-500 mb-2">Your Name</label>
@@ -121,29 +122,11 @@ const SignupPage = () => {
             </div>
 
             {isOtpSent &&
-
-
-              <div className="relative">
-                <input
-                  type="otp"
+               <OTPInput
+                  length={6}
                   value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  placeholder="OTP"
-                  required
-                  maxLength={6}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 transition-all duration-200"
+                  onChange={(val) => setOtp(val)}
                 />
-                <button
-                  type="button"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                </button>
-              </div>
-
             }
 
             <button

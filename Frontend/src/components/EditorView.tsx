@@ -1,59 +1,52 @@
 import  { useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import type { Note } from '../pages/Dashboard';
 import EditorSidebar from './EditorSidebar';
-import { Menu, Save, X } from 'lucide-react';
+import { PanelRightClose, PanelRightOpen, Save } from 'lucide-react';
+import type { EditorViewProps } from '../types';
 
-interface EditorViewProps {
-  notes: Note[];
-  activeNote: Partial<Note>;
-  onNoteSelect: (note: Note) => void;
-  onEditorChange: (field: 'title' | 'content', value: string) => void;
-  handleSaveNote: () => void;
-  isSaving: boolean;
-  onCloseEditor: () => void;
-  onNewNoteClick: () => void;
-}
 
 const EditorView = ({ notes, activeNote, onNoteSelect, onEditorChange, handleSaveNote, isSaving, onCloseEditor, onNewNoteClick }: EditorViewProps) => {
-  const [sidebarVisible, setSidebarVisible] = useState(true);
+  const [sidebarVisible, setSidebarVisible] = useState(window.innerWidth >= 768);
 
   return (
-    <div className="flex h-screen bg-gray-50 relative">
+    <div className="flex h-screen bg-gray-50 relative overflow-hidden">
       <EditorSidebar
         notes={notes}
         activeNote={activeNote}
-        onNoteSelect={onNoteSelect}
+        onNoteSelect={(note) => {
+          onNoteSelect(note);
+          if (window.innerWidth < 768) { 
+            setSidebarVisible(false);
+          }
+        }}
         onNewNoteClick={onNewNoteClick}
         onTitleChange={(title) => onEditorChange('title', title)}
         sidebarVisible={sidebarVisible}
       />
 
-      {/* Main Editor */}
       <main className="flex-1 flex flex-col">
-        <div className="p-4 flex items-center justify-between bg-white border-b border-gray-200">
-            {/* Mobile Menu Toggle */}
-             <button onClick={() => setSidebarVisible(!sidebarVisible)} className="md:hidden p-2 text-gray-600 hover:text-gray-900">
-                {sidebarVisible ? <X size={20} /> : <Menu size={20} />}
+        <div className="p-3 flex items-center justify-between bg-gray-200 border-b border-gray-200">
+             <button onClick={() => setSidebarVisible(!sidebarVisible)} className="md:hidden px-2 mb-1.5 text-gray-600 hover:text-gray-900 z-30">
+                {sidebarVisible ? <PanelRightOpen size={30} />: <PanelRightClose size={30} /> }
              </button>
-             <div className="flex-grow"></div> {/* Spacer */}
+             <div className="flex-grow"></div>
              <div className="flex items-center space-x-4">
                 <button
                     onClick={handleSaveNote}
                     disabled={isSaving}
-                    className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md disabled:bg-blue-300 hover:bg-blue-700 transition-colors"
+                    className="flex items-center text-xs md:text-normal p-2 md:px-4 md:py-2 bg-blue-600 text-white rounded-xl disabled:bg-blue-300 hover:bg-blue-700 transition-colors"
                 >
                     <Save size={16} className="mr-2" />
                     {isSaving ? 'Saving...' : 'Save Note'}
                 </button>
-                <button onClick={onCloseEditor} className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors hidden md:block">
+                <button onClick={onCloseEditor} className="text-xs md:text-normal p-2 md:px-4 md:py-2 bg-indigo-200 rounded-xl hover:bg-gray-300 transition-colors">
                     Back to Dashboard
                 </button>
              </div>
         </div>
-        <div className="flex-1 p-4 md:p-8 overflow-y-auto">
+        <div className="flex-1 p-4 md:p-2 overflow-y-auto">
             <Editor
-              apiKey="YOUR_TINYMCE_API_KEY" // ** IMPORTANT: Replace this with your actual API key **
+              apiKey={import.meta.env.VITE_TINYMCE_API_KEY} 
               value={activeNote.content || ''}
               onEditorChange={(newContent) => onEditorChange('content', newContent)}
               init={{
@@ -71,4 +64,3 @@ const EditorView = ({ notes, activeNote, onNoteSelect, onEditorChange, handleSav
 };
 
 export default EditorView;
-
