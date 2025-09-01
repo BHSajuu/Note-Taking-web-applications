@@ -52,18 +52,93 @@ const EditorView = ({ notes, activeNote, onNoteSelect, onEditorChange, handleSav
       />
 
       <main className="flex-1 flex flex-col">
-        <div className="p-3 flex items-center justify-between bg-gray-200 border-b border-gray-200">
+        <div className=" h-16 flex items-center justify-between bg-gray-200 border-b border-gray-200">
              <button onClick={() => setSidebarVisible(!sidebarVisible)} className="md:hidden px-2 mb-1.5 text-gray-600 hover:text-gray-900 z-30">
                 {sidebarVisible ? <PanelRightOpen size={30} />: <PanelRightClose size={30} /> }
              </button>
              <div className="flex-grow"></div>
-             <div className="flex items-center space-x-4">
+             <div className="flex items-center space-x-10 mr-10">
                 
                  <button
                   onClick={() => setIsAiAssistantOpen(true)}
-                  className="flex items-center text-xs md:text-normal p-2 md:px-4 md:py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors"
-                >
-                  AI Assistant
+                  className='animated-border-button'
+               >
+                  
+                  <style>{`
+                @property --angle {
+                  syntax: "<angle>";
+                  initial-value: 0deg;
+                  inherits: false;
+                }
+
+                @keyframes fadeInUp {
+                  to {
+                    opacity: 1;
+                    transform: translateY(0);
+                  }
+                }
+
+                @keyframes spin {
+                  from { --angle: 0deg; }
+                  to   { --angle: 360deg; }
+                }
+
+                .animated-border-button:hover {
+                  position: relative;
+                  padding: 3px;
+                  border-radius: 1rem;
+                  opacity: 0;
+                  animation: fadeInUp 0.6s ease-out forwards;
+                  isolation: isolate;
+                }
+
+                .animated-border-button::before,
+                .animated-border-button::after {
+                  content: "";
+                  position: absolute;
+                  inset: 0;
+                  padding: 3px;
+                  border-radius: 1rem;
+                  background-image: conic-gradient(from var(--angle), #ff4545, #00ff99, #006aff, #ff0095, #ff4545);
+                  animation: spin 2.5s linear infinite;
+                  z-index: -1;
+                }
+
+                .animated-border-button::before {
+                  filter: blur(1.5rem);
+                  opacity: 0.5;
+                }
+
+                .button-content {
+                  position: relative;
+                  z-index: 1;
+                  background: #799EFF; 
+                  text: #fff;
+                  height: 100%;
+                  padding: 0.4rem 1rem;
+                  display: flex;
+                  border-radius: 1rem;
+                  align-items: center;
+                  justify-content: space-between;
+                  gap: 1rem;
+                }
+                .loader{
+                  width: 1em;
+                  height: 1em;
+                  margin-right: 0.5em;
+                  border-radius: 50%;
+                  border-width: 0.2em;
+                  border-style: solid;
+                  border-color: transparent rgba(255, 255, 255, 0.3);
+                  animation-name: loader-animation;
+                  animation-duration: 1s;
+                  animation-timing-function: cubic-bezier(.4,.0,.6,1);
+                  animation-fill-mode: both;
+                }
+              `}</style>
+
+
+                  <p className='button-content'>AI Assistant</p>
                 </button>
 
                 <button
