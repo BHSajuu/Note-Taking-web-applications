@@ -8,7 +8,9 @@ import './models/userModel.js';
 import './models/noteModel.js';
 import authRoutes from './routes/authRoutes.js';
 import noteRoutes from './routes/noteRoutes.js'
+import aiRoutes from './routes/aiRoutes.js';
 import './config/passport-setup.js'; 
+
 
 
 dotenv.config();
@@ -26,6 +28,7 @@ const PORT = process.env['PORT'] || 5001;
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/notes', noteRoutes);
+app.use('/api/ai', aiRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('API is running...');

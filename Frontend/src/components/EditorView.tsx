@@ -1,15 +1,30 @@
-import  { useState } from 'react';
+import  { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import EditorSidebar from './EditorSidebar';
 import { PanelRightClose, PanelRightOpen, Save } from 'lucide-react';
 import type { EditorViewProps } from '../types';
+import AIAssistantDialog from './AIAssistantDialog';
 
 
 const EditorView = ({ notes, activeNote, onNoteSelect, onEditorChange, handleSaveNote, isSaving, onCloseEditor, onNewNoteClick }: EditorViewProps) => {
   const [sidebarVisible, setSidebarVisible] = useState(window.innerWidth >= 768);
+  const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
 
+   const handleInsertContent = (content: string) => {
+    const newContent = (activeNote.content || '') + content;
+    onEditorChange('content', newContent);
+    setIsAiAssistantOpen(false);
+  };
+  
   return (
     <div className="flex h-screen bg-gray-50 relative overflow-hidden">
+      {isAiAssistantOpen && (
+        <AIAssistantDialog
+          onClose={() => setIsAiAssistantOpen(false)}
+          onInsert={handleInsertContent}
+        />
+      )}
+
       <EditorSidebar
         notes={notes}
         activeNote={activeNote}
@@ -31,6 +46,14 @@ const EditorView = ({ notes, activeNote, onNoteSelect, onEditorChange, handleSav
              </button>
              <div className="flex-grow"></div>
              <div className="flex items-center space-x-4">
+                
+                 <button
+                  onClick={() => setIsAiAssistantOpen(true)}
+                  className="flex items-center text-xs md:text-normal p-2 md:px-4 md:py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors"
+                >
+                  AI Assistant
+                </button>
+
                 <button
                     onClick={handleSaveNote}
                     disabled={isSaving}
