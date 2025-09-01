@@ -1,5 +1,7 @@
 
 import  { useEffect } from 'react';
+import toast from 'react-hot-toast';
+
 import { useSearchParams } from 'react-router-dom';
 
 const AuthCallback = () => {
@@ -10,10 +12,11 @@ const AuthCallback = () => {
 
     if (token) {
       localStorage.setItem('authToken', token);
-      
+      toast.success("Google login successful!");
       window.location.replace('/dashboard');
     } else {
       console.error("Google login failed, no token received.");
+      toast.error("Google login failed, no token received.");
       window.location.replace('/');
     }
   }, [searchParams]); 

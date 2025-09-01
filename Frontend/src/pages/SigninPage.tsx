@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import { AxiosError } from 'axios';
 import OTPInput from '../components/OTPInput';
+import toast from 'react-hot-toast'; 
 
 const SigninPage = () => {
   const { login } = useAuth();
@@ -11,19 +12,19 @@ const SigninPage = () => {
   const [otp, setOtp] = useState('');
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
+     const toastId = toast.loading('Sending OTP...');
     try {
       await api.post('/auth/request-otp', { email, isSignin: true });
+      toast.success('OTP sent to your email!', { id: toastId });
       setIsOtpSent(true);
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
-      setError(axiosError.response?.data?.message || 'Failed to send OTP.');
+      toast.error(axiosError.response?.data?.message || 'Failed to send OTP.', { id: toastId });
     } finally {
       setLoading(false);
     }
@@ -31,28 +32,28 @@ const SigninPage = () => {
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
+    const toastId = toast.loading('Verifying OTP...');
     try {
       const { data } = await api.post('/auth/verify-otp', { email, otp, keepLoggedIn });
+      toast.success('Signin successful! Redirecting...', { id: toastId });
       login(data.token);
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
-      setError(axiosError.response?.data?.message || 'Failed to verify OTP.');
+      toast.error(axiosError.response?.data?.message || 'Failed to verify OTP.', { id: toastId });
     } finally {
       setLoading(false);
     }
   };
 
   const handleResendOtp = async () => {
-    setError('');
+    const toastId = toast.loading('Resending OTP...');
     try {
       await api.post('/auth/request-otp', { email, isSignin: true });
+      toast.success('OTP resent to your email!', { id: toastId });
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
-      setError(axiosError.response?.data?.message || 'Failed to resend OTP.');
-    } finally {
-      // i will add toast notification later
+      toast.error(axiosError.response?.data?.message || 'Failed to resend OTP.', { id: toastId });
     }
   };
 
@@ -81,12 +82,6 @@ const SigninPage = () => {
             </p>
           </div>
 
-          {error && (
-            <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-600 text-sm">{error}</p>
-            </div>
-          )}
-
           <form onSubmit={isOtpSent ? handleVerifyOtp : handleRequestOtp} className="space-y-6">
 
             <label className="block text-sm text-gray-500 mb-2">Email</label>
@@ -94,7 +89,7 @@ const SigninPage = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="jonas_kahnwald@gmail.com"
+              placeholder="tony_stark@gmail.com"
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 transition-all duration-200"
             />

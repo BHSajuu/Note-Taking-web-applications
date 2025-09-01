@@ -3,6 +3,7 @@ import api from '../services/api';
 import Header from '../components/Header';
 import WelcomeDashboard from '../components/WelcomeDashboard';
 import EditorView from '../components/EditorView';
+import toast from 'react-hot-toast'; 
 import type { Note } from '../types';
 
 
@@ -20,6 +21,7 @@ const Dashboard = () => {
       setNotes(data.sort((a: Note, b: Note) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()));
     } catch (error) {
       console.error('Failed to fetch notes', error);
+       toast.error('Failed to fetch your notes.');
     } finally {
       setLoading(false);
     }
@@ -53,6 +55,7 @@ const Dashboard = () => {
   const handleSaveNote = async () => {
     if (!activeNote) return;
     setIsSaving(true);
+    const toastId = toast.loading('Saving note...');
     try {
       if (activeNote._id) {
         const { data: updatedNote } = await api.put(`/notes/${activeNote._id}`, {
@@ -68,8 +71,10 @@ const Dashboard = () => {
         setNotes([newNote, ...notes]);
         setActiveNote(newNote);
       }
+      toast.success('Note saved successfully!', { id: toastId });
     } catch (error) {
       console.error('Failed to save note:', error);
+      toast.error('Failed to save note.', { id: toastId });
     } finally {
       setIsSaving(false);
     }
@@ -81,6 +86,7 @@ const Dashboard = () => {
       await fetchNotes(); 
     } catch (error) {
       console.error('Failed to delete note:', error);
+      toast.error('Failed to delete note.');
     }
   };
 

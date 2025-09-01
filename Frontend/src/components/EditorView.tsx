@@ -6,6 +6,7 @@ import type { EditorViewProps } from '../types';
 import AIAssistantDialog from './AIAssistantDialog';
 import { useAuth } from '../context/AuthContext';
 import { convertMarkdownToHtml } from '../lib/util';
+import toast from 'react-hot-toast';
 
 
 const EditorView = ({ notes, activeNote, onNoteSelect, onEditorChange, handleSaveNote, isSaving, onCloseEditor, onNewNoteClick }: EditorViewProps) => {
@@ -21,6 +22,7 @@ const EditorView = ({ notes, activeNote, onNoteSelect, onEditorChange, handleSav
     const newContent = (activeNote.content || '') + improvedContent;
     onEditorChange('content', newContent);
     setIsAiAssistantOpen(false);
+    toast.success('Content inserted successfully!');
   };
 
   useEffect(() => {

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import { AxiosError } from 'axios';
 import OTPInput from '../components/OTPInput';
+import toast from 'react-hot-toast';
 
 const SignupPage = () => {
   const { login } = useAuth();
@@ -13,13 +14,12 @@ const SignupPage = () => {
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [otp, setOtp] = useState('');
   const [isOtpSent, setIsOtpSent] = useState(false);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
+    const toastId = toast.loading('Sending OTP...');
     try {
       await api.post('/auth/request-otp', {
         name,
@@ -27,10 +27,11 @@ const SignupPage = () => {
         dateOfBirth,
         isSignin: false
       });
+      toast.success('Verification code sent to your email!', { id: toastId });
       setIsOtpSent(true);
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
-      setError(axiosError.response?.data?.message || 'Failed to send verification code.');
+      toast.error(axiosError.response?.data?.message || 'Failed to send verification code.', { id: toastId });
     } finally {
       setLoading(false);
     }
@@ -38,14 +39,15 @@ const SignupPage = () => {
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
+    const toastId = toast.loading('Verifying OTP...');
     try {
       const { data } = await api.post('/auth/verify-otp', { email, otp });
+      toast.success('Signup successful! Redirecting...', { id: toastId });
       login(data.token);
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
-      setError(axiosError.response?.data?.message || 'Failed to verify code.');
+      toast.error(axiosError.response?.data?.message || 'Failed to verify code.', { id: toastId });
     } finally {
       setLoading(false);
     }
@@ -75,13 +77,6 @@ const SignupPage = () => {
               Sign up to enjoy the feature of HD
             </p>
           </div>
-
-          {error && (
-            <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-600 text-sm">{error}</p>
-            </div>
-          )}
-
           <form onSubmit={isOtpSent ? handleVerifyOtp : handleRequestOtp} className="space-y-4">
 
             <div>
@@ -90,7 +85,7 @@ const SignupPage = () => {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Jonas Khanwald"
+                placeholder="Tony Stark"
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 transition-all duration-200"
               />
@@ -115,7 +110,7 @@ const SignupPage = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="jonas_kahnwald@gmail.com"
+                placeholder="tony_stark@gmail.com"
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 transition-all duration-200"
               />
