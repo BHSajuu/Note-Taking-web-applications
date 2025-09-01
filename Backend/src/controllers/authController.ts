@@ -174,8 +174,10 @@ export const getMe = async (req: Request, res: Response) => {
     email: req.user?.email,
     dateOfBirth: req.user?.dateOfBirth,
     createdAt: req.user?.createdAt,
-    updatedAt: req.user?.updatedAt
+    updatedAt: req.user?.updatedAt,
+    aiRequestCount: req.user?.aiRequestCount,
+    lastAiRequestDate: req.user?.lastAiRequestDate,
   };
-  
+
   res.status(200).json(userData);
 };

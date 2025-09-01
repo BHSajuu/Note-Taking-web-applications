@@ -10,6 +10,8 @@ export interface IUser extends Document {
   otpExpiry?: Date | null;
   createdAt: Date;
   updatedAt: Date;
+  aiRequestCount: number;
+  lastAiRequestDate: Date;
 }
 export interface INote extends Document {
   title: string;

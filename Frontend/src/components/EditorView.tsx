@@ -1,20 +1,31 @@
-import  { useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import EditorSidebar from './EditorSidebar';
 import { PanelRightClose, PanelRightOpen, Save } from 'lucide-react';
 import type { EditorViewProps } from '../types';
 import AIAssistantDialog from './AIAssistantDialog';
+import { useAuth } from '../context/AuthContext';
+import { convertMarkdownToHtml } from '../lib/util';
 
 
 const EditorView = ({ notes, activeNote, onNoteSelect, onEditorChange, handleSaveNote, isSaving, onCloseEditor, onNewNoteClick }: EditorViewProps) => {
+  const {user} = useAuth();
   const [sidebarVisible, setSidebarVisible] = useState(window.innerWidth >= 768);
   const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
+  const [requestCount, setRequestCount] = useState(user?.aiRequestCount || 0);
 
    const handleInsertContent = (content: string) => {
-    const newContent = (activeNote.content || '') + content;
+    // Structure the content properly before inserting
+    const improvedContent = convertMarkdownToHtml(content);
+    
+    const newContent = (activeNote.content || '') + improvedContent;
     onEditorChange('content', newContent);
     setIsAiAssistantOpen(false);
   };
+
+  useEffect(() => {
+    setRequestCount(user?.aiRequestCount || 0);
+  }, [user]);
 
   return (
     <div className="flex h-screen bg-gray-50 relative overflow-hidden">
@@ -22,6 +33,7 @@ const EditorView = ({ notes, activeNote, onNoteSelect, onEditorChange, handleSav
         <AIAssistantDialog
           onClose={() => setIsAiAssistantOpen(false)}
           onInsert={handleInsertContent}
+          count={requestCount}
         />
       )}
 

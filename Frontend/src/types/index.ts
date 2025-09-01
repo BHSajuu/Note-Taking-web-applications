@@ -11,6 +11,8 @@ export interface User {
   name: string;
   email: string;
   dateOfBirth?: string | Date;
+  aiRequestCount: number;
+  lastAiRequestDate: Date;
 }
 
 export interface AuthContextType {
@@ -57,3 +59,14 @@ export type OTPInputProps = {
   onComplete?: (value: string) => void;
   autoFocus?: boolean;
 };
+
+export interface AIAssistantDialogProps {
+  onClose: () => void;
+  onInsert: (text: string) => void;
+  count: number;
+}
+
+export interface Message {
+  role: 'user' | 'model';
+  parts: { text: string }[];
+}

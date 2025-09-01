@@ -24,6 +24,14 @@ const userSchema = new mongoose.Schema<IUser>(
     otpExpiry: {
       type: Date,
     },
+    aiRequestCount: {
+      type: Number,
+      default: 0,
+    },
+    lastAiRequestDate: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true, 
