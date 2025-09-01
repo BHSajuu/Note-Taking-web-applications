@@ -50,7 +50,7 @@ This project is a monorepo containing both the frontend and backend code.
 
 ## Installation
 
-### 1) Clone the repository
+###  Clone the repository
 ```bash
 git clone https://github.com/BHSajuu/Note-Taking-web-applications
 cd Note-Taking-web-applications
