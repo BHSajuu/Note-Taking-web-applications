@@ -1,4 +1,4 @@
-import  { useRef, useState } from 'react';
+import  { useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import EditorSidebar from './EditorSidebar';
 import { PanelRightClose, PanelRightOpen, Save } from 'lucide-react';
@@ -15,7 +15,7 @@ const EditorView = ({ notes, activeNote, onNoteSelect, onEditorChange, handleSav
     onEditorChange('content', newContent);
     setIsAiAssistantOpen(false);
   };
-  
+
   return (
     <div className="flex h-screen bg-gray-50 relative overflow-hidden">
       {isAiAssistantOpen && (
