@@ -24,7 +24,7 @@ A modern, full-stack note-taking application built with the MERN stack (MongoDB,
   - Fully responsive design with a collapsible sidebar for an optimal experience on mobile devices.
     
 - **AI-powered assistant**
-  - An integrated AI assistant to help summarize long notes, correct grammar, or generate ideas directly within the editor.
+  - An integrated AI assistant to help summarize long notes, correct grammar, or generate ideas to notes directly within the editor.
 
 
 ## Technology Stack
